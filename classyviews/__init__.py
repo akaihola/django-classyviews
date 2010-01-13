@@ -45,7 +45,7 @@ class ClassyView(HttpResponse):
             self.__class__ = result.__class__
             self.__dict__ = result.__dict__
         else:
-            self.context = result
+            self._context = result
             if render:
                 content = self.render(request, *args, **kwargs)
             else:
@@ -54,7 +54,7 @@ class ClassyView(HttpResponse):
 
     def render(self, request, *args, **kwargs):
         return render_to_string(self.template_name,
-                                self.context,
+                                self._context,
                                 RequestContext(request))
 
     def set_response(self, cls, *args):

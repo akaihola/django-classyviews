@@ -27,7 +27,7 @@ class WithViewContextNode(template.Node):
                                        (func_name, mod_name, str(e)))
         response = view(context['request'], _render=False)
         context.push()
-        context.update(response.context)
+        context.update(response._context)
         output = self.nodelist.render(context)
         context.pop()
         return output
