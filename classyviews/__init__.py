@@ -60,3 +60,19 @@ class ClassyView(HttpResponse):
     def set_response(self, cls, *args):
         self.__class__ = cls
         self.__init__(*args)
+
+    def __setstate__(self, state):
+        """Unpickle given dictionary into :attr:`__dict__`
+
+        Note that the :attr:`_context` attribute is lost when
+        pickling.
+        """
+        self.__dict__ = state
+
+    def __getstate__(self):
+        """Strip the :attr:`_context` attribute when pickling
+
+        The context can include forms which are not picklable.
+        """
+        return dict((k, v) for k, v in self.__dict__.iteritems()
+                    if k != '_context')
