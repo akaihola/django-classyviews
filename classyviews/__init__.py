@@ -32,6 +32,7 @@ class ClassyView(HttpResponse):
         'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'CONNECT')
 
     def __init__(self, request, *args, **kwargs):
+        self.request = request
         render = kwargs.pop('_render', True)
         try:
             handler = getattr(self, request.method)
@@ -47,15 +48,15 @@ class ClassyView(HttpResponse):
         else:
             self._context = result
             if render:
-                content = self.render(request, *args, **kwargs)
+                content = self._render(*args, **kwargs)
             else:
                 content = ''
             super(ClassyView, self).__init__(content)
 
-    def render(self, request, *args, **kwargs):
+    def _render(self, *args, **kwargs):
         return render_to_string(self.template_name,
                                 self._context,
-                                RequestContext(request))
+                                RequestContext(self.request))
 
     def set_response(self, cls, *args):
         self.__class__ = cls
